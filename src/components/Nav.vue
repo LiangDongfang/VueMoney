@@ -7,10 +7,15 @@
 </template>
 
 <script>
+import x from "@/assets/icons/label.svg";
+
+console.log(x);
+
 export default {
   name: "Nav"
 };
 </script>
+
 
 <style lang="scss" scoped>
 </style>

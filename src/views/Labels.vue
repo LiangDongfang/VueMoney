@@ -1,7 +1,8 @@
 <template>
   <div>
-    Labels.vue
-    <Nav />
+    <Layout>
+      <p>Labels.vue</p>
+    </Layout>
   </div>
 </template>
 
@@ -10,6 +11,3 @@ export default {
   name: "Labels"
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
