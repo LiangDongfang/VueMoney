@@ -22,6 +22,7 @@ export default {
 
 
 <style lang="scss" scoped>
+@import "~@/assets/style/helper.scss";
 nav {
   display: flex;
   box-shadow: 0 0 03px rgba($color: #cccccc, $alpha: 0.64);
@@ -40,7 +41,7 @@ nav {
     height: 32px;
   }
   > .item.selected {
-    color: gold;
+    color: $color-highLight;
   }
 }
 </style>
