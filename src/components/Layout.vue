@@ -16,7 +16,6 @@ export default {
 
 <style lang="scss">
 .layout-content {
-  border: 3px solid red;
   display: flex;
   flex-direction: column-reverse;
 }
