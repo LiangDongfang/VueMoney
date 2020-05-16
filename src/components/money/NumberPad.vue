@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Component from "vue-class-component";
+import { Component } from "vue-property-decorator";
 
 @Component
 export default class NumberPad extends Vue {
@@ -34,14 +34,14 @@ export default class NumberPad extends Vue {
       return;
     }
     if (this.output === "0") {
-      if ("0123456789".indexOf(input) >= 1) {
+      if ("0123456789".indexOf(input) >= 0) {
         this.output = input;
       } else {
         this.output += input;
       }
       return;
     }
-    if (this.output.indexOf(".") >= 1 && input === ".") {
+    if (this.output.indexOf(".") >= 0 && input === ".") {
       return;
     }
     this.output += input;
