@@ -29,7 +29,7 @@ nav {
   flex-direction: row;
   font-size: 16px;
   > .item {
-    padding: 2px 0;
+    padding-top: 6px;
     width: 33.33333%;
     display: flex;
     justify-content: center;
