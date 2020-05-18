@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{recodeList}}
     <Layout classPerfix="layout">
       <NumberPad :value.sync="recode.amount" @submit="saveRecode" />
       <Types :value.sync="recode.type" />
@@ -16,8 +17,9 @@ import NumberPad from "@/components/money/NumberPad.vue";
 import Types from "@/components/money/Types.vue";
 import Notes from "@/components/money/Notes.vue";
 import Tags from "@/components/money/Tags.vue";
+import model from "@/model.ts";
 
-type Recode = {
+type RecodeItem = {
   tags: string[];
   type: string;
   notes: string;
@@ -25,15 +27,15 @@ type Recode = {
   createAt?: Date; //？表示可以不存在
 };
 
+const recodeList = model.fetch();
+
 @Component({
   components: { NumberPad, Tags, Notes, Types }
 })
 export default class Money extends Vue {
   tags: string[] = ["衣", "食", "住", "行"];
-  recodeList: Recode[] = JSON.parse(
-    window.localStorage.getItem("recodeList") || "[]"
-  );
-  recode: Recode = {
+  recodeList: RecodeItem[] = recodeList;
+  recode: RecodeItem = {
     tags: [],
     type: "-",
     notes: "",
@@ -47,13 +49,13 @@ export default class Money extends Vue {
     this.recode.notes = value;
   }
   saveRecode() {
-    const recodeCopy: Recode = JSON.parse(JSON.stringify(this.recode));
+    const recodeCopy: RecodeItem = model.clone(this.recode);
     recodeCopy.createAt = new Date();
     this.recodeList.push(recodeCopy);
   }
   @Watch("recodeList")
   onReacdeListchange() {
-    window.localStorage.setItem("recodeList", JSON.stringify(this.recodeList));
+    model.save(this.recodeList);
   }
 }
 </script>
