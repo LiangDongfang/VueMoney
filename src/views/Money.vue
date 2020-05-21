@@ -17,7 +17,8 @@ import NumberPad from "@/components/money/NumberPad.vue";
 import Types from "@/components/money/Types.vue";
 import Notes from "@/components/money/Notes.vue";
 import Tags from "@/components/money/Tags.vue";
-import model from "@/model.ts";
+import recodeListModel from "@/models/recordListModel.ts";
+import tagListModel from "@/models/tagListModel.ts";
 
 type RecodeItem = {
   tags: string[];
@@ -27,13 +28,14 @@ type RecodeItem = {
   createAt?: Date; //？表示可以不存在
 };
 
-const recodeList = model.fetch();
+const recodeList = recodeListModel.fetch();
+const tagList = tagListModel.fetch();
 
 @Component({
   components: { NumberPad, Tags, Notes, Types }
 })
 export default class Money extends Vue {
-  tags: string[] = ["衣", "食", "住", "行"];
+  tags = tagList;
   recodeList: RecodeItem[] = recodeList;
   recode: RecodeItem = {
     tags: [],
@@ -49,13 +51,13 @@ export default class Money extends Vue {
     this.recode.notes = value;
   }
   saveRecode() {
-    const recodeCopy: RecodeItem = model.clone(this.recode);
+    const recodeCopy: RecodeItem = recodeListModel.clone(this.recode);
     recodeCopy.createAt = new Date();
     this.recodeList.push(recodeCopy);
   }
   @Watch("recodeList")
   onReacdeListchange() {
-    model.save(this.recodeList);
+    recodeListModel.save(this.recodeList);
   }
 }
 </script>
