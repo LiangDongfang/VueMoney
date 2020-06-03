@@ -1,64 +1,50 @@
 <template>
   <div>
     <Layout classPerfix="layout">
-      <NumberPad :value.sync="recode.amount" @submit="saveRecode" />
-      <Types :value.sync="recode.type" />
+      <NumberPad :value.sync="record.amount" @submit="saveRecode" />
+      <Tab :data-source="recordTypeList" :value.sync="record.type" />
       <div class="notes">
-        <FormItem field-name="备注" placeholder="在这里输入备注" @update:value="onUpdateNotes" />
+        <FormItem field-name="备注" placeholder="在这里输入备注" :value.sync="record.notes" />
       </div>
-      <Tags :data-source.sync="tags" @update:value="onUpdateTags" />
+      <Tags :value.sync="record.tags" />
     </Layout>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import NumberPad from "@/components/money/NumberPad.vue";
-import Types from "@/components/money/Types.vue";
 import FormItem from "@/components/money/FormItem.vue";
 import Tags from "@/components/money/Tags.vue";
-import recodeListModel from "@/models/recordListModel.ts";
-import tagListModel from "@/models/tagListModel.ts";
-
-type RecodeItem = {
-  tags: string[];
-  type: string;
-  notes: string;
-  amount: number;
-  createAt?: Date; //？表示可以不存在
-};
-
-const recodeList = recodeListModel.fetch();
-const tagList = tagListModel.fetch();
-
+import Tab from "@/components/Tab.vue";
+import recordTypeList from "@/constants/recordTypeList.ts";
 @Component({
-  components: { NumberPad, Tags, FormItem, Types }
+  components: { NumberPad, Tags, FormItem, Tab }
 })
 export default class Money extends Vue {
-  tags = tagList;
-  recodeList: RecodeItem[] = recodeList;
-  recode: RecodeItem = {
+  get recordList() {
+    return this.$store.state.recordList;
+  }
+  recordTypeList = recordTypeList;
+  record: RecordItem = {
     tags: [],
     type: "-",
     notes: "",
     amount: 0
   };
-
-  onUpdateTags(value: string[]) {
-    this.recode.tags = value;
-  }
-  onUpdateNotes(value: string) {
-    this.recode.notes = value;
+  created() {
+    this.$store.commit("fetchRecords");
   }
   saveRecode() {
-    const recodeCopy: RecodeItem = recodeListModel.clone(this.recode);
-    recodeCopy.createAt = new Date();
-    this.recodeList.push(recodeCopy);
-  }
-  @Watch("recodeList")
-  onReacdeListchange() {
-    recodeListModel.save(this.recodeList);
+    if (!this.record.tags || this.record.tags.length === 0) {
+      return window.alert("亲选择至少一个标签");
+    }
+    this.$store.commit("createRecords", this.record);
+    if (this.$store.state.createRecordError === null) {
+      window.alert("已保存");
+    }
+    this.record.notes = "";
   }
 }
 </script>

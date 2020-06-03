@@ -5,23 +5,29 @@
     </div>
     <ol class="current">
       <li
-        v-for="tag in dataSource"
+        v-for="tag in tagList"
         :key="tag.id"
         :class="{'selected':selectedTags.indexOf(tag)>= 0}"
-        @click="toggle(tag)">{{tag.name}}
-      </li>
+        @click="toggle(tag)"
+      >{{tag.name}}</li>
     </ol>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import mixin from "vue-class-component";
+import { TagHelper } from "@/mixins/TagHelper.ts";
 import { Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class Tags extends Vue {
-  @Prop() readonly dataSource: string[] | undefined;
+export default class Tags extends mixin(TagHelper) {
+  get tagList() {
+    return this.$store.state.tagList;
+  }
   selectedTags: string[] = [];
+  created() {
+    this.$store.commit("fetchTags");
+  }
   toggle(tag: string) {
     const index = this.selectedTags.indexOf(tag);
     if (index >= 0) {
@@ -30,14 +36,6 @@ export default class Tags extends Vue {
       this.selectedTags.push(tag);
     }
     this.$emit("update:value", this.selectedTags);
-  }
-  createTag() {
-    const name = window.prompt("请输入标签名");
-    if (name === "") {
-      window.alert("标签名不能为空");
-    } else if (this.dataSource) {
-      this.$emit("update:dataSource", [...this.dataSource, name]);
-    }
   }
 }
 </script>
@@ -62,6 +60,7 @@ export default class Tags extends Vue {
       border-radius: ($h/2);
       padding: 0 16px;
       margin-right: 12px;
+      margin-top: 12px;
       &.selected {
         background: darken($bg, 50%);
         color: #ffffff;

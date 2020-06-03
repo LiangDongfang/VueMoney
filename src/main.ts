@@ -7,12 +7,15 @@ import Nav from '@/components/Nav.vue'
 import Layout from '@/components/Layout.vue'
 import Icon from '@/components/Icon.vue'
 
-Vue.config.productionTip = false
+// Vue.config.productionTip = false
 
 
-Vue.component('Layout', Layout) //声明Layout为全局组件，谁要用谁用
-Vue.component('Nav', Nav) //声明Nav为全局组件，谁要用谁用
+//声明Layout为全局组件，谁要用谁用
+Vue.component('Layout', Layout)
+Vue.component('Nav', Nav)
 Vue.component('Icon', Icon)
+
+
 
 new Vue({
   router,

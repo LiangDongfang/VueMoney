@@ -6,7 +6,7 @@
       <span class="rightIcon"></span>
     </div>
     <div class="form-wrapper">
-      <FormItem :value="tag.name" @update:value="update" field-name="标签名" placeholder="请输入标签名" />
+      <FormItem :value="currentTag.name" @update:value="update" field-name="标签名" placeholder="请输入标签名" />
     </div>
     <div class="button-wrapper">
       <Button @click="remove">删除标签</Button>
@@ -17,7 +17,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import tagListModel from "@/models/tagListModel";
 import FormItem from "@/components/money/FormItem.vue";
 import Button from "@/components/Button.vue";
 
@@ -25,28 +24,25 @@ import Button from "@/components/Button.vue";
   components: { FormItem, Button }
 })
 export default class EditLable extends Vue {
-  tag?: { id: string; name: string } = undefined;
+  get currentTag() {
+    return this.$store.state.currentTag;
+  }
   created() {
     const id = this.$route.params.id;
-    tagListModel.fetch(); //获取最新的数据
-    const tags = tagListModel.data;
-    const tag = tags.filter(t => t.id === id)[0];
-    if (tag) {
-      this.tag = tag;
-    } else {
+    this.$store.commit('fetchTags')
+    this.$store.commit("setCurrentTag", id);
+    if (!this.currentTag) {
       this.$router.replace("/404");
     }
   }
   update(name: string) {
-    if (this.tag) {
-      tagListModel.update(this.tag.id, name);
+    if (this.currentTag) {
+      this.$store.commit("updateTag", { id: this.currentTag.id, name });
     }
   }
   remove() {
-    if (this.tag) {
-      if (tagListModel.remove(this.tag.id)) {
-        this.$router.back()
-      }
+    if (this.currentTag) {
+      this.$store.commit("removeTag",this.currentTag.id);
     }
   }
   goBack() {
